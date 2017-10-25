@@ -16,6 +16,7 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -51,26 +52,8 @@ public class NetworkModule {
         }
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public okhttp3.Response intercept(@NonNull Chain chain) throws IOException {
-                        Request original = chain.request();
-
-                        // Customize the request
-                        @SuppressLint("DefaultLocale") Request request = original.newBuilder()
-                                .header("Content-Type", "application/json")
-                                .removeHeader("Pragma")
-                                .header("Cache-Control", String.format("max-age=%d", BuildConfig.CACHETIME))
-                                .build();
-
-                        okhttp3.Response response = chain.proceed(request);
-                        response.cacheResponse();
-                        // Customize or return the response
-                        return response;
-                    }
-                })
                 .cache(cache)
-
+                .connectTimeout(BuildConfig.LIMIT, TimeUnit.SECONDS)
                 .build();
 
 

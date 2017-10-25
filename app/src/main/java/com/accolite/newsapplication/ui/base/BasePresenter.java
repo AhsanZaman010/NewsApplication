@@ -9,25 +9,21 @@ import com.accolite.newsapplication.network.callback.RemoteServiceCallback;
 import io.reactivex.disposables.CompositeDisposable;
 
 
-/**
- * Created by Accolite- on 7/21/2017.
- */
-
 public class BasePresenter implements RemoteServiceCallback {
 
     private final BaseView mView;
-    protected CompositeDisposable mCompositeDisposable;
+    protected CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private final String TAG = getClass().getSimpleName();
 
     protected BasePresenter(BaseView view){
         mView = view;
     }
 
-    void onStart(){
+    public void onStart(){
         mCompositeDisposable = new CompositeDisposable();
     }
 
-    void onStop(){
+    public void onStop(){
         if(mCompositeDisposable!=null){
             mCompositeDisposable.dispose();
         }
@@ -39,11 +35,11 @@ public class BasePresenter implements RemoteServiceCallback {
     }
 
     @Override
-    public void onError(NetworkErrorException networkError, int requestCode) {
+    public void onError(Throwable throwable, int requestCode) {
         mView.hideLoading();
-        if(networkError!=null){
-            mView.showError(networkError.getMessage());
-            Log.e(TAG, "Error received: "+ networkError.getMessage());
+        if(throwable!=null){
+            mView.showError(throwable.getMessage());
+            Log.e(TAG, "Error received: "+ throwable.getMessage());
         } else {
             Log.e(TAG, "Error received");
             mView.showError("");

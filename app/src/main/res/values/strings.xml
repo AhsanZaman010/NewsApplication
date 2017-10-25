@@ -2,4 +2,7 @@
     <string name="app_name">NewsApplication</string>
     <string name="not_found">Not found</string>
     <string name="error">Error</string>
+    <string name="news_title">News</string>
+    <string name="no_news_found">No news found</string>
+    <string name="url">url</string>
 </resources>

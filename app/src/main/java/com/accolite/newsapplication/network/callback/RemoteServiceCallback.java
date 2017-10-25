@@ -6,6 +6,6 @@ public interface RemoteServiceCallback<T> {
 
     void onSuccess(T responseObject, int requestCode);
 
-    void onError(NetworkErrorException networkError, int requestCode);
+    void onError(Throwable throwable, int requestCode);
 
 }

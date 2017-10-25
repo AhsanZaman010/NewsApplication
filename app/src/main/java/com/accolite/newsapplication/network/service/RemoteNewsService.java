@@ -1,13 +1,13 @@
 package com.accolite.newsapplication.network.service;
 
-import android.accounts.NetworkErrorException;
-
 import com.accolite.newsapplication.model.news.NewsResponse;
 import com.accolite.newsapplication.network.callback.RemoteServiceCallback;
+import com.accolite.newsapplication.utils.NetworkConstants;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class RemoteNewsService implements IRemoteNewsService {
@@ -25,7 +25,19 @@ public class RemoteNewsService implements IRemoteNewsService {
                 .doOnError(new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        callback.onError(new NetworkErrorException(throwable), requestCode);
+                        callback.onError(throwable, requestCode);
+                    }
+                })
+                .onErrorReturn(new Function<Throwable, NewsResponse>() {
+                    @Override
+                    public NewsResponse apply(Throwable throwable) throws Exception {
+                        NewsResponse newsResponse = new NewsResponse();
+                        if(throwable != null) {
+                            newsResponse.setError(NetworkConstants.GENERIC_ERROR + " : " + throwable.getMessage());
+                        } else {
+                            newsResponse.setError(NetworkConstants.GENERIC_ERROR);
+                        }
+                        return newsResponse;
                     }
                 })
                 .subscribe(new Consumer<NewsResponse>() {
